@@ -1,0 +1,4 @@
+[16-Dec-2021 00:07:27 Asia/Kolkata] PHP Fatal error:  Out of memory (allocated 425721856) (tried to allocate 400560128 bytes) in /home2/atsteqco/farmeraegis-portal/app/Http/Controllers/Restaurant/OrderController.php on line 83
+[16-Dec-2021 00:07:48 Asia/Kolkata] PHP Fatal error:  Out of memory (allocated 425721856) (tried to allocate 400560128 bytes) in /home2/atsteqco/farmeraegis-portal/app/Http/Controllers/Restaurant/OrderController.php on line 83
+[16-Dec-2021 00:08:34 Asia/Kolkata] PHP Fatal error:  Out of memory (allocated 425721856) (tried to allocate 400560128 bytes) in /home2/atsteqco/farmeraegis-portal/app/Http/Controllers/Restaurant/OrderController.php on line 83
+[16-Dec-2021 00:09:56 Asia/Kolkata] PHP Fatal error:  Out of memory (allocated 425721856) (tried to allocate 400560128 bytes) in /home2/atsteqco/farmeraegis-portal/app/Http/Controllers/Restaurant/OrderController.php on line 83
