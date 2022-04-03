@@ -8,5 +8,5 @@
 
 # farmeraegis_portal_time_management
 
-1. Install time tracke on local machine to track time https://app.timecamp.com
+1. Install time tracker on local machine to track time https://app.timecamp.com
 2. Ask Superadmin for invitation
