@@ -355,6 +355,24 @@ $(document).on('click', 'input', function(event) {
     $(this).select();
 });
 
+$(document).on('keyup', '.select2-search__field', function(event) {
+        contact_id = $(this).val();
+        $.ajax({
+            url: '/get-purchase-orders-po',
+            data:{contact_id: contact_id},
+            dataType: 'json',
+            success: function(data) {
+                $('#purchase_order_ids').select2('destroy').empty().select2({data: data});
+                $('#purchase_order_ids').select2('open');
+                $('#purchase_entry_table tbody').find('tr').each( function(){
+                    if (typeof($(this).data('purchase_order_id')) !== 'undefined') {
+                        $(this).remove();
+                    }
+                });
+            },
+        });
+});
+
 $(document).on('click', '.toggle-font-size', function(event) {
     localStorage.setItem('upos_font_size', $(this).data('size'));
     update_font_size();
