@@ -1,0 +1,1 @@
+@include('quality.partials.show_details')

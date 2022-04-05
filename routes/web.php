@@ -144,6 +144,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     Route::resource('users', 'ManageUserController');
     Route::resource('quality', 'QualityCheckController');
+    Route::get('quality-check', 'QualityCheckController@qualityCheck');
+    Route::post('quality-save', 'QualityCheckController@qualitySave');
 
     Route::resource('group-taxes', 'GroupTaxController');
 
