@@ -355,8 +355,29 @@ $(document).on('click', 'input', function(event) {
     $(this).select();
 });
 
-$(document).on('keyup', '.select2-search__field', function(event) {
-        contact_id = $(this).val();
+var typingTimer;                //timer identifier
+var doneTypingInterval = 1000;  //time in ms, 5 seconds for example
+var input = $(document);
+
+//on keyup, start the countdown
+input.on('keyup', '.select2-search--inline > .select2-search__field' , function () {
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(doneTyping, doneTypingInterval);
+});
+
+//on keydown, clear the countdown 
+input.on('keydown', '.select2-search--inline > .select2-search__field', function () {
+  clearTimeout(typingTimer);
+});
+
+//user is "finished typing," do something
+function doneTyping () {
+  //do something
+  var contact_id = $('.select2-search--inline > .select2-search__field').val();
+  getPo(contact_id);
+}
+
+function getPo(contact_id) {
         $.ajax({
             url: '/get-purchase-orders-po',
             data:{contact_id: contact_id},
@@ -371,7 +392,7 @@ $(document).on('keyup', '.select2-search__field', function(event) {
                 });
             },
         });
-});
+}
 
 $(document).on('click', '.toggle-font-size', function(event) {
     localStorage.setItem('upos_font_size', $(this).data('size'));

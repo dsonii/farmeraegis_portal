@@ -296,9 +296,17 @@ class PurchaseController extends Controller
             }
 
             $transaction_data = $request->only([ 'ref_no', 'status', 'contact_id', 'transaction_date', 'total_before_tax', 'location_id','discount_type', 'discount_amount','tax_id', 'tax_amount', 'shipping_details', 'shipping_charges', 'final_total', 'additional_notes', 'exchange_rate', 'pay_term_number', 'pay_term_type', 'purchase_order_ids', 'supplier_invoice_number', 'vehicle_number', 'supplier_invoice_date']);
-
             $exchange_rate = $transaction_data['exchange_rate'];
-
+            if(empty($transaction_data['contact_id'])) {
+                $puchaseOrderIds = $transaction_data['purchase_order_ids'][0];
+                $purchaseOrders = Transaction::with('contact')->where('business_id', $business_id)
+                        ->where('type', 'purchase_order')
+                        ->whereIn('status', ['partial', 'ordered'])
+                        ->where('id', $puchaseOrderIds)
+                        ->select('contact_id as contact_id', 'id')
+                        ->first();
+                        $transaction_data['contact_id'] = $purchaseOrders->contact_id;
+            }
             //Reverse exchange rate and save it.
             //$transaction_data['exchange_rate'] = $transaction_data['exchange_rate'];
 
@@ -306,14 +314,12 @@ class PurchaseController extends Controller
             //Adding temporary fix by validating
             $request->validate([
                 'status' => 'required',
-                'contact_id' => 'required',
                 'transaction_date' => 'required',
                 'total_before_tax' => 'required',
                 'location_id' => 'required',
                 'final_total' => 'required',
                 'document' => 'file|max:'. (config('constants.document_size_limit') / 1000)
             ]);
-
             $user_id = $request->session()->get('user.id');
             $enable_product_editing = $request->session()->get('business.enable_editing_product_from_purchase');
 

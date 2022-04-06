@@ -24,12 +24,12 @@
 		<div class="row">
 			<div class="@if(!empty($default_purchase_status)) col-sm-4 @else col-sm-3 @endif">
 				<div class="form-group">
-					{!! Form::label('supplier_id', __('purchase.supplier') . ':*') !!}
+					{!! Form::label('supplier_id', __('purchase.supplier') . ':') !!}
 					<div class="input-group">
 						<span class="input-group-addon">
 							<i class="fa fa-user"></i>
 						</span>
-						{!! Form::select('contact_id', [], null, ['class' => 'form-control', 'placeholder' => __('messages.please_select'), 'required', 'id' => 'supplier_id']); !!}
+						{!! Form::select('contact_id', [], null, ['class' => 'form-control', 'placeholder' => __('messages.please_select'), 'id' => 'supplier_id']); !!}
 						<span class="input-group-btn">
 							<button type="button" class="btn btn-default bg-white btn-flat add_new_supplier" data-name=""><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
 						</span>
