@@ -326,7 +326,7 @@ class TransactionUtil extends Util
                     'product_id' => $product['product_id'],
                     'variation_id' => $product['variation_id'],
                     'demand_qty' => $product['demand_qty'],
-                    'remaining_qty' => $product['remaining_qty'],
+                    'remaining_qty' => ($product['demand_qty'] - ($uf_quantity * $multiplier)),
                     'quantity' =>  $uf_quantity * $multiplier,
                     'unit_price_before_discount' => $unit_price_before_discount,
                     'unit_price' => $unit_price,
@@ -535,10 +535,11 @@ class TransactionUtil extends Util
                 $unit_price = ((100 - $discount_amount) * $unit_price_before_discount) / 100;
             }
         }
-
         //Update sell lines.
         $sell_line->fill(['product_id' => $product['product_id'],
             'variation_id' => $product['variation_id'],
+            'demand_qty' => $product['demand_qty'],
+            'remaining_qty' => (($product['demand_qty']) - ($this->num_uf($product['quantity']) * $multiplier)),
             'quantity' => $this->num_uf($product['quantity']) * $multiplier,
             'unit_price_before_discount' => $unit_price_before_discount,
             'unit_price' => $unit_price,

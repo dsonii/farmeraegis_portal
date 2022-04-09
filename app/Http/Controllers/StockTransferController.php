@@ -666,9 +666,12 @@ class StockTransferController extends Controller
                     $sell_line_arr = [
                                 'product_id' => $product['product_id'],
                                 'variation_id' => $product['variation_id'],
+                                'demand_qty' => $product['demand_qty'],
+                                'remaining_qty' => $product['remaining_qty'],
                                 'quantity' => $this->productUtil->num_uf($product['quantity']),
                                 'item_tax' => 0,
-                                'tax_id' => null];
+                                'tax_id' => null
+                            ];
 
                     $purchase_line_arr = $sell_line_arr;
                     $sell_line_arr['unit_price'] = $this->productUtil->num_uf($product['unit_price']);
