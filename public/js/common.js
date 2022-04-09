@@ -329,6 +329,57 @@ var dateRangeSettings = {
     },
 };
 
+$(document).on('keyup', 'input.input_quantity', function(){
+    var classList = $(this).attr('class').split(/\s+/);;
+    var lastClass = parseInt(classList.length)-1;
+    var qtyClass = classList[lastClass]
+    var qtyClassTndex = qtyClass.split('-');
+    var qtyvalue = $(this).val();
+    var demandValue = $('.prod-'+qtyClassTndex[1]).val();
+    if(demandValue=='') {
+        demandValue = 0;
+    }
+
+    if(qtyvalue=='') {
+        qtyvalue = 0;
+    }
+    if(typeof demandValue!=='undefined' && typeof qtyvalue!=='undefined') {
+           var remainingQty =  parseFloat(demandValue) - parseFloat(qtyvalue);
+           if(parseFloat(demandValue) < parseFloat(qtyvalue)){
+            $('.prod_remaining-'+qtyClassTndex[1]).val('0');
+           } else {
+            $('.prod_remaining-'+qtyClassTndex[1]).val(remainingQty);
+           }
+           
+    }
+})
+
+$(document).on('keyup', 'input.product_demand_qty', function(){
+    console.log('ji');
+    var classList = $(this).attr('class').split(/\s+/);;
+    var lastClass = parseInt(classList.length)-1;
+    var demandClass = classList[lastClass]
+    var demandClassTndex = demandClass.split('-');
+    var demandValue = $(this).val();
+    var qtyValue = $('.qty-'+demandClassTndex[1]).val();
+    if(qtyValue=='') {
+        qtyValue = 0;
+    }
+
+    if(demandValue=='') {
+        demandValue = 0;
+    }
+    if(typeof demandValue!=='undefined' && typeof qtyValue!=='undefined') {
+           var remainingQty =  parseFloat(demandValue) - parseFloat(qtyValue);
+           if(parseFloat(demandValue) < parseFloat(qtyValue)){
+            $('.prod_remaining-'+demandClassTndex[1]).val('0');
+           } else {
+            $('.prod_remaining-'+demandClassTndex[1]).val(remainingQty);
+           }
+           
+    }
+})
+
 //Check for number string in input field, if data-decimal is 0 then don't allow decimal symbol
 $(document).on('keypress', 'input.input_number', function(event) {
     var is_decimal = $(this).data('decimal');

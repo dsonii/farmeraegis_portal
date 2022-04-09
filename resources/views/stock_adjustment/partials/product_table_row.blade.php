@@ -39,7 +39,7 @@
         @endif
     @endif
     </td>
-    <td><input type="text" name="products[{{$row_index}}][demand_qty]" class="form-control product_demand_qty input_number" value="0"></td>
+    <td><input type="text" name="products[{{$row_index}}][demand_qty]" class="form-control product_demand_qty input_number prod-{{$row_index}}" value="0"></td>
     <td>
         {{-- If edit then transaction sell lines will be present --}}
         @if(!empty($product->transaction_sell_lines_id))
@@ -60,7 +60,7 @@
             @endphp
         @endif
 
-        <input type="text" class="form-control product_quantity input_number input_quantity" value="{{@format_quantity($product->quantity_ordered)}}" name="products[{{$row_index}}][quantity]" 
+        <input type="text" class="form-control product_quantity input_number input_quantity qty-{{$row_index}}" value="{{@format_quantity($product->quantity_ordered)}}" name="products[{{$row_index}}][quantity]" 
         @if($product->unit_allow_decimal == 1) data-decimal=1 @else data-rule-abs_digit="true" data-msg-abs_digit="@lang('lang_v1.decimal_value_not_allowed')" data-decimal=0 @endif
         data-rule-required="true" data-msg-required="@lang('validation.custom-messages.this_field_is_required')" @if($product->enable_stock) data-rule-max-value="{{$product->qty_available}}" data-msg-max-value="@lang('validation.custom-messages.quantity_not_available', ['qty'=> $product->formatted_qty_available, 'unit' => $product->unit  ])"
         data-qty_available="{{$product->qty_available}}" 
@@ -68,7 +68,7 @@
          @endif >
         {{$product->unit}}
     </td>
-    <td><input type="text" readonly name="products[{{$row_index}}][remaining_qty]" class="form-control product_remaining_qty input_number" value=""></td>
+    <td><input type="text" readonly name="products[{{$row_index}}][remaining_qty]" class="form-control product_remaining_qty input_number prod_remaining-{{$row_index}}" value="0"></td>
     <td>
         <input type="text" name="products[{{$row_index}}][unit_price]" class="form-control product_unit_price input_number" value="{{@num_format($product->last_purchased_price)}}">
     </td>
