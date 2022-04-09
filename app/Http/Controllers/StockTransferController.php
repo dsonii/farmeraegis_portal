@@ -170,7 +170,7 @@ class StockTransferController extends Controller
     private function stockTransferStatuses()
     {
         return [
-            'pending' => __('lang_v1.pending'),
+            'pending' => __('lang_v1.demand'),
             'in_transit' => __('lang_v1.in_transit'),
             'completed' => __('restaurant.completed')
         ];
