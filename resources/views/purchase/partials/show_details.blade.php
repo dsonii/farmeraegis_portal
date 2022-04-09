@@ -170,6 +170,7 @@
                 <th>@lang('product.exp_date')</th>
               @endif
               @endif
+              <th>Quality</th>
               <th class="text-right">@lang('sale.subtotal')</th>
             </tr>
           </thead>
@@ -231,6 +232,10 @@
               </td>
               @endif
               @endif
+              <?php 
+              $array = ['1'=>'Average', '2'=>'Good', '3'=>'Excellent', '4'=>'Bad'];
+              ?>
+              <td><?php echo $array[$purchase_line->quality_check]??'';?></td>
               <td class="text-right"><span class="display_currency" data-currency_symbol="true">{{ $purchase_line->purchase_price_inc_tax * $purchase_line->quantity }}</span></td>
             </tr>
             @php 
