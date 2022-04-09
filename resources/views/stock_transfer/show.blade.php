@@ -74,8 +74,11 @@
 				        <tr class="bg-green">
 				          <th>#</th>
 				          <th>@lang('sale.product')</th>
+				          <th>@lang('sale.demand_qty')</th>
 				          <th>@lang('sale.qty')</th>
+				          <th>@lang('sale.remaining_qty')</th>
 				          <th>@lang('sale.unit_price')</th>
+				          <th>@lang('sale.received_qty')</th>
 				          <th>@lang('sale.subtotal')</th>
 				        </tr>
 				        @php 
@@ -101,9 +104,14 @@
 				                @endif
 				               @endif
 				            </td>
+							<td>{{ @format_quantity($sell_lines->demand_qty) }}</td>
 				            <td>{{ @format_quantity($sell_lines->quantity) }} {{$sell_lines->product->unit->short_name ?? ""}}</td>
-				            <td>
+				            <td>{{ @format_quantity($sell_lines->remaining_qty) }}</td>
+							<td>
 				            	<span class="display_currency" data-currency_symbol="true">{{ $sell_lines->unit_price_inc_tax}}</span>
+							</td>
+							<td>
+								<input type="text" name="products[{{$loop->iteration}}][received_qty]" class="form-control product_received_qty input_number prod-{{$loop->iteration}}" value="{{!empty($sell_lines->received_qty)?$sell_lines->received_qty:0}}"></td>
 							</td>
 				            <td>
 				              <span class="display_currency" data-currency_symbol="true">{{ $sell_lines->unit_price_inc_tax * $sell_lines->quantity }}</span>

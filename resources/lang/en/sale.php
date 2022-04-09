@@ -34,6 +34,7 @@ return [
     'actual_qty' => 'Actual Quantity / Re-Demand Quantity',
     'demand_qty' => 'Demand Quantity',
     'remaining_qty' => 'Remaining Quantity',
+    'received_qty' => 'Received Quantity',
     'subtotal' => 'Subtotal',
     'pos_sale_added' => 'Sale added successfully',
     'price_inc_tax' => 'Price inc. tax',
