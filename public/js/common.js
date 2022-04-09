@@ -355,7 +355,6 @@ $(document).on('keyup', 'input.input_quantity', function(){
 })
 
 $(document).on('keyup', 'input.product_demand_qty', function(){
-    console.log('ji');
     var classList = $(this).attr('class').split(/\s+/);;
     var lastClass = parseInt(classList.length)-1;
     var demandClass = classList[lastClass]
@@ -377,6 +376,28 @@ $(document).on('keyup', 'input.product_demand_qty', function(){
             $('.prod_remaining-'+demandClassTndex[1]).val(remainingQty);
            }
            
+    }
+})
+
+$(document).on('keyup', 'input.product_received_qty', function(){
+    var id = $(this).data('id');
+    var qtyValue = $(this).val();
+    var classList =  $(this).attr('class').split(/\s+/);
+    var lastClass = parseInt(classList.length)-1;
+    var prodClass = classList[lastClass]
+    if (id !==''){
+        $.ajax({
+            url: '/received-qty',
+            data:{id: id, qtyValue:qtyValue},
+            type:'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#incorrect-error').html('');
+                if(data == false){
+                    $('.'+prodClass).after('<label id="incorrect-error" class="error" for="status">Please enter correct value.</label>')
+                }
+            },
+        });
     }
 })
 

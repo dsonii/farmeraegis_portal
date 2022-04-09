@@ -7,6 +7,7 @@ use App\BusinessLocation;
 use App\PurchaseLine;
 use App\Transaction;
 use App\TransactionSellLinesPurchaseLines;
+use App\TransactionSellLine;
 use App\Utils\ModuleUtil;
 
 use App\Utils\ProductUtil;
@@ -382,6 +383,18 @@ class StockTransferController extends Controller
 
         return view('stock_transfer.show')
                 ->with(compact('sell_transfer', 'location_details', 'lot_n_exp_enabled', 'statuses', 'activities'));
+    }
+
+    public function receivedQty(Request $request) {
+        $id = $request->id;
+        $qtyValue = $request->qtyValue;
+        $sellLine = TransactionSellLine::find($id);
+        if ($sellLine->demand_qty < $qtyValue) {
+            return json_encode(false);
+        }
+        $sellLine->received_qty = $qtyValue;
+        $sellLine->save();
+        return json_encode(true);
     }
 
     /**

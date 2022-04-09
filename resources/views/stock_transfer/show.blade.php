@@ -111,7 +111,7 @@
 				            	<span class="display_currency" data-currency_symbol="true">{{ $sell_lines->unit_price_inc_tax}}</span>
 							</td>
 							<td>
-								<input type="text" name="products[{{$loop->iteration}}][received_qty]" class="form-control product_received_qty input_number prod-{{$loop->iteration}}" value="{{!empty($sell_lines->received_qty)?$sell_lines->received_qty:0}}"></td>
+								<input type="text" name="received_qty" class="form-control product_received_qty input_number prod-{{$loop->iteration}}" data-id="{{$sell_lines->id}}" value="{{!empty($sell_lines->received_qty)?$sell_lines->received_qty:0}}"></td>
 							</td>
 				            <td>
 				              <span class="display_currency" data-currency_symbol="true">{{ $sell_lines->unit_price_inc_tax * $sell_lines->quantity }}</span>

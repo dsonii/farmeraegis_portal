@@ -255,6 +255,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('stock-transfers/print/{id}', 'StockTransferController@printInvoice');
     Route::post('stock-transfers/update-status/{id}', 'StockTransferController@updateStatus');
     Route::resource('stock-transfers', 'StockTransferController');
+    Route::get('received-qty', 'StockTransferController@receivedQty');
     
     Route::get('/opening-stock/add/{product_id}', 'OpeningStockController@add');
     Route::post('/opening-stock/save', 'OpeningStockController@save');
