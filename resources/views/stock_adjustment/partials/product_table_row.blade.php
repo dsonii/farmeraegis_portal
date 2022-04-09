@@ -39,6 +39,7 @@
         @endif
     @endif
     </td>
+    <td><input type="text" name="products[{{$row_index}}][demand_qty]" class="form-control product_demand_qty input_number" value="0"></td>
     <td>
         {{-- If edit then transaction sell lines will be present --}}
         @if(!empty($product->transaction_sell_lines_id))
@@ -67,6 +68,7 @@
          @endif >
         {{$product->unit}}
     </td>
+    <td><input type="text" readonly name="products[{{$row_index}}][remaining_qty]" class="form-control product_remaining_qty input_number" value=""></td>
     <td>
         <input type="text" name="products[{{$row_index}}][unit_price]" class="form-control product_unit_price input_number" value="{{@num_format($product->last_purchased_price)}}">
     </td>

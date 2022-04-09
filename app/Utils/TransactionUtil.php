@@ -325,6 +325,8 @@ class TransactionUtil extends Util
                 $line = [
                     'product_id' => $product['product_id'],
                     'variation_id' => $product['variation_id'],
+                    'demand_qty' => $product['demand_qty'],
+                    'remaining_qty' => $product['remaining_qty'],
                     'quantity' =>  $uf_quantity * $multiplier,
                     'unit_price_before_discount' => $unit_price_before_discount,
                     'unit_price' => $unit_price,
@@ -381,7 +383,6 @@ class TransactionUtil extends Util
                 $this->updateSalesOrderLine($line['so_line_id'], $line['quantity'], 0);
             }
         }
-
         if (!is_object($transaction)) {
             $transaction = Transaction::findOrFail($transaction);
         }
@@ -416,7 +417,7 @@ class TransactionUtil extends Util
                     }
                 }
             }
-
+  
             //Combo product lines.
             //$products_value = array_values($products);
             foreach ($lines_formatted as $key => $value) {

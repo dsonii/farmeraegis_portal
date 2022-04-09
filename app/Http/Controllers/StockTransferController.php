@@ -228,6 +228,8 @@ class StockTransferController extends Controller
                 foreach ($products as $product) {
                     $sell_line_arr = [
                                 'product_id' => $product['product_id'],
+                                'demand_qty' => $product['demand_qty'],
+                                'remaining_qty' => $product['remaining_qty'],
                                 'variation_id' => $product['variation_id'],
                                 'quantity' => $this->productUtil->num_uf($product['quantity']),
                                 'item_tax' => 0,
@@ -584,6 +586,8 @@ class StockTransferController extends Controller
             $product->quantity_ordered = $sell_line->quantity;
             $product->transaction_sell_lines_id = $sell_line->id;
             $product->lot_no_line_id = $sell_line->lot_no_line_id;
+            $product->demand_qty = $sell_line->demand_qty;
+            $product->remaining_qty = $sell_line->remaining_qty;
 
             //Get lot number dropdown if enabled
             $lot_numbers = [];
