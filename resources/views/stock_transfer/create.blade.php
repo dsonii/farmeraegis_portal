@@ -84,7 +84,13 @@
 									@lang('sale.product')
 								</th>
 								<th class="col-sm-2 text-center">
-									@lang('sale.qty')
+									@lang('sale.demand_qty')
+								</th>
+								<th class="col-sm-2 text-center">
+									@lang('sale.actual_qty')
+								</th>
+								<th class="col-sm-2 text-center">
+									@lang('sale.remaining_qty')
 								</th>
 								<th class="col-sm-2 text-center">
 									@lang('sale.unit_price')
