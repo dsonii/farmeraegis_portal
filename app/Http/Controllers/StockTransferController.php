@@ -368,7 +368,7 @@ class StockTransferController extends Controller
                         'l2.id'
             )
             ->where('transactions.business_id', $business_id)
-            ->where('transactions.status', 'completed')
+            ->where('transactions.status', 'final')
             ->where('transactions.type', 'sell_transfer')
             ->select(
                 'transactions.id',
