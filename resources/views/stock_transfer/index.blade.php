@@ -45,5 +45,8 @@
 <!-- /.content -->
 @stop
 @section('javascript')
+<script>
+    var page = '{{$page}}';
+</script>
 	<script src="{{ asset('js/stock_transfer.js?v=' . $asset_v) }}"></script>
 @endsection

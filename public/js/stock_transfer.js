@@ -137,7 +137,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         aaSorting: [[0, 'desc']],
-        ajax: '/stock-transfers',
+        ajax: '/'+page,
         columnDefs: [
             {
                 targets: 8,

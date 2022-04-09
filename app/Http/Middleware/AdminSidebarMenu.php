@@ -530,6 +530,29 @@ class AdminSidebarMenu
                                 ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'stock-transfers' && request()->segment(2) == null]
                             );
                         }
+                        if (auth()->user()->can('purchase.view')) {
+                            $sub->url(
+                                action('StockTransferController@demandIndex'),
+                                'List Demand Stock Transfers',
+                                ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'demand-stock-transfers' && request()->segment(2) == null]
+                            );
+                        }
+
+                        if (auth()->user()->can('purchase.view')) {
+                            $sub->url(
+                                action('StockTransferController@inTransitIndex'),
+                                'List In Transit Stock Transfers',
+                                ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'in-transit-stock-transfers' && request()->segment(2) == null]
+                            );
+                        }
+                        if (auth()->user()->can('purchase.view')) {
+                            $sub->url(
+                                action('StockTransferController@completedIndex'),
+                                'List Completed Stock Transfers',
+                                ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'completed-stock-transfers' && request()->segment(2) == null]
+                            );
+                        }
+
                         if (auth()->user()->can('purchase.create')) {
                             $sub->url(
                                 action('StockTransferController@create'),

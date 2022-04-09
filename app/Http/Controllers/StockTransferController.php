@@ -138,9 +138,301 @@ class StockTransferController extends Controller
                 }])
                 ->make(true);
         }
-
-        return view('stock_transfer.index')->with(compact('statuses'));
+        $page = 'stock-transfers';
+        return view('stock_transfer.index')->with(compact('statuses', 'page'));
     }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function demandIndex()
+    {
+        if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $statuses = $this->stockTransferStatuses();
+
+        if (request()->ajax()) {
+            $business_id = request()->session()->get('user.business_id');
+            $edit_days = request()->session()->get('business.transaction_edit_days');
+
+            $stock_transfers = Transaction::join(
+                'business_locations AS l1',
+                'transactions.location_id',
+                '=',
+                'l1.id'
+            )
+                    ->join('transactions as t2', 't2.transfer_parent_id', '=', 'transactions.id')
+                    ->join(
+                        'business_locations AS l2',
+                        't2.location_id',
+                        '=',
+                        'l2.id'
+                    )
+                    ->where('transactions.business_id', $business_id)
+                    ->where('transactions.status', 'pending')
+                    ->where('transactions.type', 'sell_transfer')
+                    ->select(
+                        'transactions.id',
+                        'transactions.transaction_date',
+                        'transactions.ref_no',
+                        'l1.name as location_from',
+                        'l2.name as location_to',
+                        'transactions.final_total',
+                        'transactions.shipping_charges',
+                        'transactions.additional_notes',
+                        'transactions.id as DT_RowId',
+                        'transactions.status'
+                    );
+            
+            return Datatables::of($stock_transfers)
+                ->addColumn('action', function ($row) use ($edit_days) {
+                    $html = '<button type="button" title="' . __("stock_adjustment.view_details") . '" class="btn btn-primary btn-xs btn-modal" data-container=".view_modal" data-href="' . action('StockTransferController@show', [$row->id]) . '"><i class="fa fa-eye" aria-hidden="true"></i> ' . __('messages.view') . '</button>';
+
+                    $html .= ' <a href="#" class="print-invoice btn btn-info btn-xs" data-href="' . action('StockTransferController@printInvoice', [$row->id]) . '"><i class="fa fa-print" aria-hidden="true"></i> '. __("messages.print") .'</a>';
+
+                    $date = \Carbon::parse($row->transaction_date)
+                        ->addDays($edit_days);
+                    $today = today();
+
+                    if ($date->gte($today)) {
+                        $html .= '&nbsp;
+                        <button type="button" data-href="' . action("StockTransferController@destroy", [$row->id]) . '" class="btn btn-danger btn-xs delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> ' . __("messages.delete") . '</button>';
+                    }
+
+                    if ($row->status != 'final') {
+                        $html .= '&nbsp;
+                        <a href="' . action("StockTransferController@edit", [$row->id]) . '" class="btn btn-primary btn-xs"><i class="fa fa-edit" aria-hidden="true"></i> ' . __("messages.edit") . '</a>';
+                    }
+
+                    return $html;
+                })
+                ->editColumn(
+                    'final_total',
+                    '<span class="display_currency" data-currency_symbol="true">{{$final_total}}</span>'
+                )
+                ->editColumn(
+                    'shipping_charges',
+                    '<span class="display_currency" data-currency_symbol="true">{{$shipping_charges}}</span>'
+                )
+                ->editColumn('status', function($row) use($statuses) {
+                    $row->status = $row->status == 'final' ? 'completed' : $row->status;
+                    $status =  $statuses[$row->status];
+                    $status_color = !empty($this->status_colors[$row->status]) ? $this->status_colors[$row->status] : 'bg-gray';
+                    $status = $row->status != 'completed' ? '<a href="#" class="stock_transfer_status" data-status="' . $row->status . '" data-href="' . action("StockTransferController@updateStatus", [$row->id]) . '"><span class="label ' . $status_color .'">' . $statuses[$row->status] . '</span></a>' : '<span class="label ' . $status_color .'">' . $statuses[$row->status] . '</span>';
+                     
+                    return $status;
+                })
+                ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
+                ->rawColumns(['final_total', 'action', 'shipping_charges', 'status'])
+                ->setRowAttr([
+                'data-href' => function ($row) {
+                    return  action('StockTransferController@show', [$row->id]);
+                }])
+                ->make(true);
+        }
+        $page = 'demand-stock-transfers';
+        return view('stock_transfer.index')->with(compact('statuses', 'page'));
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function inTransitIndex()
+    {
+        if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $statuses = $this->stockTransferStatuses();
+
+        if (request()->ajax()) {
+            $business_id = request()->session()->get('user.business_id');
+            $edit_days = request()->session()->get('business.transaction_edit_days');
+
+            $stock_transfers = Transaction::join(
+                'business_locations AS l1',
+                'transactions.location_id',
+                '=',
+                'l1.id'
+            )
+            ->join('transactions as t2', 't2.transfer_parent_id', '=', 'transactions.id')
+            ->join(
+                        'business_locations AS l2',
+                        't2.location_id',
+                        '=',
+                        'l2.id'
+            )
+            ->where('transactions.business_id', $business_id)
+            ->where('transactions.status', 'in_transit')
+            ->where('transactions.type', 'sell_transfer')
+            ->select(
+                'transactions.id',
+                'transactions.transaction_date',
+                'transactions.ref_no',
+                'l1.name as location_from',
+                'l2.name as location_to',
+                'transactions.final_total',
+                'transactions.shipping_charges',
+                'transactions.additional_notes',
+                'transactions.id as DT_RowId',
+                'transactions.status'
+            );
+            
+            return Datatables::of($stock_transfers)
+                ->addColumn('action', function ($row) use ($edit_days) {
+                    $html = '<button type="button" title="' . __("stock_adjustment.view_details") . '" class="btn btn-primary btn-xs btn-modal" data-container=".view_modal" data-href="' . action('StockTransferController@show', [$row->id]) . '"><i class="fa fa-eye" aria-hidden="true"></i> ' . __('messages.view') . '</button>';
+
+                    $html .= ' <a href="#" class="print-invoice btn btn-info btn-xs" data-href="' . action('StockTransferController@printInvoice', [$row->id]) . '"><i class="fa fa-print" aria-hidden="true"></i> '. __("messages.print") .'</a>';
+
+                    $date = \Carbon::parse($row->transaction_date)
+                        ->addDays($edit_days);
+                    $today = today();
+
+                    if ($date->gte($today)) {
+                        $html .= '&nbsp;
+                        <button type="button" data-href="' . action("StockTransferController@destroy", [$row->id]) . '" class="btn btn-danger btn-xs delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> ' . __("messages.delete") . '</button>';
+                    }
+
+                    if ($row->status != 'final') {
+                        $html .= '&nbsp;
+                        <a href="' . action("StockTransferController@edit", [$row->id]) . '" class="btn btn-primary btn-xs"><i class="fa fa-edit" aria-hidden="true"></i> ' . __("messages.edit") . '</a>';
+                    }
+
+                    return $html;
+                })
+                ->editColumn(
+                    'final_total',
+                    '<span class="display_currency" data-currency_symbol="true">{{$final_total}}</span>'
+                )
+                ->editColumn(
+                    'shipping_charges',
+                    '<span class="display_currency" data-currency_symbol="true">{{$shipping_charges}}</span>'
+                )
+                ->editColumn('status', function($row) use($statuses) {
+                    $row->status = $row->status == 'final' ? 'completed' : $row->status;
+                    $status =  $statuses[$row->status];
+                    $status_color = !empty($this->status_colors[$row->status]) ? $this->status_colors[$row->status] : 'bg-gray';
+                    $status = $row->status != 'completed' ? '<a href="#" class="stock_transfer_status" data-status="' . $row->status . '" data-href="' . action("StockTransferController@updateStatus", [$row->id]) . '"><span class="label ' . $status_color .'">' . $statuses[$row->status] . '</span></a>' : '<span class="label ' . $status_color .'">' . $statuses[$row->status] . '</span>';
+                     
+                    return $status;
+                })
+                ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
+                ->rawColumns(['final_total', 'action', 'shipping_charges', 'status'])
+                ->setRowAttr([
+                'data-href' => function ($row) {
+                    return  action('StockTransferController@show', [$row->id]);
+                }])
+                ->make(true);
+        }
+        $page = 'in-transit-stock-transfers';
+        return view('stock_transfer.index')->with(compact('statuses','page'));
+    }
+
+   
+/**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function completedIndex()
+    {
+        if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $statuses = $this->stockTransferStatuses();
+
+        if (request()->ajax()) {
+            $business_id = request()->session()->get('user.business_id');
+            $edit_days = request()->session()->get('business.transaction_edit_days');
+
+            $stock_transfers = Transaction::join(
+                'business_locations AS l1',
+                'transactions.location_id',
+                '=',
+                'l1.id'
+            )
+            ->join('transactions as t2', 't2.transfer_parent_id', '=', 'transactions.id')
+            ->join(
+                        'business_locations AS l2',
+                        't2.location_id',
+                        '=',
+                        'l2.id'
+            )
+            ->where('transactions.business_id', $business_id)
+            ->where('transactions.status', 'completed')
+            ->where('transactions.type', 'sell_transfer')
+            ->select(
+                'transactions.id',
+                'transactions.transaction_date',
+                'transactions.ref_no',
+                'l1.name as location_from',
+                'l2.name as location_to',
+                'transactions.final_total',
+                'transactions.shipping_charges',
+                'transactions.additional_notes',
+                'transactions.id as DT_RowId',
+                'transactions.status'
+            );
+            
+            return Datatables::of($stock_transfers)
+                ->addColumn('action', function ($row) use ($edit_days) {
+                    $html = '<button type="button" title="' . __("stock_adjustment.view_details") . '" class="btn btn-primary btn-xs btn-modal" data-container=".view_modal" data-href="' . action('StockTransferController@show', [$row->id]) . '"><i class="fa fa-eye" aria-hidden="true"></i> ' . __('messages.view') . '</button>';
+
+                    $html .= ' <a href="#" class="print-invoice btn btn-info btn-xs" data-href="' . action('StockTransferController@printInvoice', [$row->id]) . '"><i class="fa fa-print" aria-hidden="true"></i> '. __("messages.print") .'</a>';
+
+                    $date = \Carbon::parse($row->transaction_date)
+                        ->addDays($edit_days);
+                    $today = today();
+
+                    if ($date->gte($today)) {
+                        $html .= '&nbsp;
+                        <button type="button" data-href="' . action("StockTransferController@destroy", [$row->id]) . '" class="btn btn-danger btn-xs delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> ' . __("messages.delete") . '</button>';
+                    }
+
+                    if ($row->status != 'final') {
+                        $html .= '&nbsp;
+                        <a href="' . action("StockTransferController@edit", [$row->id]) . '" class="btn btn-primary btn-xs"><i class="fa fa-edit" aria-hidden="true"></i> ' . __("messages.edit") . '</a>';
+                    }
+
+                    return $html;
+                })
+                ->editColumn(
+                    'final_total',
+                    '<span class="display_currency" data-currency_symbol="true">{{$final_total}}</span>'
+                )
+                ->editColumn(
+                    'shipping_charges',
+                    '<span class="display_currency" data-currency_symbol="true">{{$shipping_charges}}</span>'
+                )
+                ->editColumn('status', function($row) use($statuses) {
+                    $row->status = $row->status == 'final' ? 'completed' : $row->status;
+                    $status =  $statuses[$row->status];
+                    $status_color = !empty($this->status_colors[$row->status]) ? $this->status_colors[$row->status] : 'bg-gray';
+                    $status = $row->status != 'completed' ? '<a href="#" class="stock_transfer_status" data-status="' . $row->status . '" data-href="' . action("StockTransferController@updateStatus", [$row->id]) . '"><span class="label ' . $status_color .'">' . $statuses[$row->status] . '</span></a>' : '<span class="label ' . $status_color .'">' . $statuses[$row->status] . '</span>';
+                     
+                    return $status;
+                })
+                ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
+                ->rawColumns(['final_total', 'action', 'shipping_charges', 'status'])
+                ->setRowAttr([
+                'data-href' => function ($row) {
+                    return  action('StockTransferController@show', [$row->id]);
+                }])
+                ->make(true);
+        }
+        $page = 'completed-stock-transfers';
+        return view('stock_transfer.index')->with(compact('statuses','page'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
