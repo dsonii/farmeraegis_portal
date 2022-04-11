@@ -1,7 +1,7 @@
 $(document).ready(function() {
     //Add products
     if(typeof page == 'undefined') {
-        var page = 'stock-transfers';
+       // var page = 'stock-transfers';
     }
     if ($('#search_product_for_srock_adjustment').length > 0) {
         //Add Product
