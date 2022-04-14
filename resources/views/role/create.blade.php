@@ -335,6 +335,14 @@
               </label>
             </div>
           </div>
+          <div class="col-md-12">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('permissions[]', 'product.quantity_finder', false, 
+                [ 'class' => 'input-icheck']); !!} Create Quantity Finder
+              </label>
+            </div>
+          </div>
         </div>
         </div>
         <hr>
