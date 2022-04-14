@@ -462,11 +462,23 @@ class StockTransferController extends Controller
 
     private function stockTransferStatuses()
     {
-        return [
-            'pending' => __('lang_v1.demand'),
-            'in_transit' => __('lang_v1.in_transit'),
-            'completed' => __('restaurant.completed')
-        ];
+        $arr = [];
+        $demand = auth()->user()->can('product.stock_demand');
+        if($demand){
+            $arr['pending'] = __('lang_v1.demand');
+        }
+
+        $stockInTransit = auth()->user()->can('product.stock_in_transit');
+        if($stockInTransit){
+            $arr['in_transit'] = __('lang_v1.in_transit');
+        }
+
+        $stockCompleted = auth()->user()->can('product.stock_completed');
+        if($stockCompleted){
+            $arr['completed'] = __('lang_v1.completed');
+        }
+
+        return $arr;
     }
 
     /**

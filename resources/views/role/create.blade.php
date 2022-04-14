@@ -311,6 +311,30 @@
               @show_tooltip(__('lang_v1.view_purchase_price_tooltip'))
             </div>
           </div>
+          <div class="col-md-12">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('permissions[]', 'product.stock_demand', false, 
+                [ 'class' => 'input-icheck']); !!} Stock Demand
+              </label>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('permissions[]', 'product.stock_in_transit', false, 
+                [ 'class' => 'input-icheck']); !!} Stock In Transit
+              </label>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('permissions[]', 'product.stock_completed', false, 
+                [ 'class' => 'input-icheck']); !!} Stock Completed
+              </label>
+            </div>
+          </div>
         </div>
         </div>
         <hr>
