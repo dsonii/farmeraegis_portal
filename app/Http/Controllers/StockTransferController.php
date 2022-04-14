@@ -454,13 +454,23 @@ class StockTransferController extends Controller
 
         $business_locations = BusinessLocation::forDropdown($business_id);
 
-        $statuses = $this->stockTransferStatuses();
+        $statuses = $this->stockTransferStatusesNew();
 
         return view('stock_transfer.create')
                 ->with(compact('business_locations', 'statuses'));
     }
 
     private function stockTransferStatuses()
+    {
+        $arr = [];
+        $arr['pending'] = __('lang_v1.demand');
+        $arr['in_transit'] = __('lang_v1.in_transit');
+        $arr['completed'] = __('lang_v1.completed');
+
+        return $arr;
+    }
+
+    private function stockTransferStatusesNew()
     {
         $arr = [];
         $demand = auth()->user()->can('product.stock_demand');
@@ -881,7 +891,7 @@ class StockTransferController extends Controller
 
         $business_locations = BusinessLocation::forDropdown($business_id);
 
-        $statuses = $this->stockTransferStatuses();
+        $statuses = $this->stockTransferStatusesNew();
 
         $sell_transfer = Transaction::where('business_id', $business_id)
                 ->where('type', 'sell_transfer')
