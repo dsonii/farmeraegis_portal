@@ -343,6 +343,14 @@
               </label>
             </div>
           </div>
+          <div class="col-md-12">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('permissions[]', 'product.quantity_finder_list', in_array('product.quantity_finder_list', $role_permissions), 
+                [ 'class' => 'input-icheck']); !!} View Demand Quantity List
+              </label>
+            </div>
+          </div>
         </div>
         </div>
         <hr>
