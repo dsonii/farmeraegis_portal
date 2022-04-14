@@ -22,6 +22,14 @@
             <table class="table table-bordered table-striped ajax_view" id="stock_transfer_table">
                 <thead>
                     <tr>
+                        <?php 
+                        if(isset($userCheckPermission) and !empty($userCheckPermission )and $page == 'demand-stock-transfers') {
+                            ?>
+                                <th>
+                                <button type="button" title="View Quantity finder" class="btn btn-primary btn-xs btn-quantity" data-container=".view_modal" data-href=""><i class="fa fa-eye" aria-hidden="true"></i> Quantity Finder</button></th>
+                            <?php
+                        }
+                        ?>
                         <th>@lang('messages.date')</th>
                         <th>@lang('purchase.ref_no')</th>
                         <th>@lang('lang_v1.location_from')</th>

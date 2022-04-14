@@ -156,6 +156,7 @@ class StockTransferController extends Controller
 
         $statuses = $this->stockTransferStatuses();
 
+        $userCheckPermission = auth()->user()->can('product.quantity_finder_list');
         if (request()->ajax()) {
             $business_id = request()->session()->get('user.business_id');
             $edit_days = request()->session()->get('business.transaction_edit_days');
@@ -211,6 +212,11 @@ class StockTransferController extends Controller
 
                     return $html;
                 })
+                ->addColumn('checkBox', function($row) use ($userCheckPermission){
+                    if ($userCheckPermission) {
+                        return  '<input class="input-icheck-box" name="quantiy_finder[]" type="checkbox" value="'.$row->id.'" >';
+                    }
+                })
                 ->editColumn(
                     'final_total',
                     '<span class="display_currency" data-currency_symbol="true">{{$final_total}}</span>'
@@ -228,7 +234,7 @@ class StockTransferController extends Controller
                     return $status;
                 })
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
-                ->rawColumns(['final_total', 'action', 'shipping_charges', 'status'])
+                ->rawColumns(['final_total', 'action', 'shipping_charges', 'status', 'checkBox'])
                 ->setRowAttr([
                 'data-href' => function ($row) {
                     return  action('StockTransferController@show', [$row->id]);
@@ -236,7 +242,7 @@ class StockTransferController extends Controller
                 ->make(true);
         }
         $page = 'demand-stock-transfers';
-        return view('stock_transfer.index')->with(compact('statuses', 'page'));
+        return view('stock_transfer.index')->with(compact('statuses', 'page', 'userCheckPermission'));
     }
 
 

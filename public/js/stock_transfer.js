@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    $(document).on('click', '.btn-quantity', function(){
+        var allVal = $('.input-icheck-box').val();
+        console.log(allVal);
+    });
     //Add products
     if(typeof page == 'undefined') {
        // var page = 'stock-transfers';
@@ -143,12 +147,13 @@ $(document).ready(function() {
         ajax: '/'+page,
         columnDefs: [
             {
-                targets: 8,
+                targets: [0, 9],
                 orderable: false,
                 searchable: false,
             },
         ],
         columns: [
+            { data: 'checkBox', name: 'checkBox' },
             { data: 'transaction_date', name: 'transaction_date' },
             { data: 'ref_no', name: 'ref_no' },
             { data: 'location_from', name: 'l1.name' },
@@ -228,6 +233,7 @@ $(document).ready(function() {
         });
     });
 });
+
 
 function stock_transfer_product_row(variation_id) {
     var row_index = parseInt($('#product_row_index').val());

@@ -2142,8 +2142,9 @@ function show_product_type_form() {
 }
 
 $(document).on('click', 'table.ajax_view tbody tr', function(e) {
-    if (
+     if (
         !$(e.target).is('td.selectable_td input[type=checkbox]') &&
+        !$(e.target).is('input[type=checkbox].input-icheck-box') &&
         !$(e.target).is('td.selectable_td') &&
         !$(e.target).is('td.clickable_td') &&
         !$(e.target).is('a') &&
