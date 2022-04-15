@@ -19,7 +19,7 @@ $(document).ready(function() {
             });
        }
     });
-    Add products
+    // Add products
     if(typeof page == 'undefined') {
         var page = 'stock-transfers';
     }

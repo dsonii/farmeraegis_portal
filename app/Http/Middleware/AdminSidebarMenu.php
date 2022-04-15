@@ -560,6 +560,14 @@ class AdminSidebarMenu
                                 ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'stock-transfers' && request()->segment(2) == 'create']
                             );
                         }
+
+                        if (auth()->user()->can('product.quantity_finder_list')) {
+                            $sub->url(
+                                action('WarehouseQuantityController@index'),
+                                'Demand Quantity List',
+                                ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'warehouse-quantity' && request()->segment(2) == null]
+                            );
+                        }
                     },
                     ['icon' => 'fa fas fa-truck']
                 )->order(35);

@@ -1305,6 +1305,7 @@ return [
     'denomination_add_help_text' => 'Add denominations in Settings -> Business Settings -> POS -> Cash Denominations',
     'order_dates' => 'Order dates',
     'demand_order' => 'Demand Order',
+    'demand_quantity' => 'Demand Quantity',
     'view_all_demand_order' => 'View all demand order',
     'all_demand_orders' => 'All demand orders',
     'add_demand_order' => 'Add Demand Order',
