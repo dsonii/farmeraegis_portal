@@ -7,7 +7,7 @@ $(document).ready(function() {
         var parsedDemandQty = parseInt(demandQty);
         var parsedWarehouseQty = parseInt(warehouseQty);
         var remaningQty = parsedDemandQty - parsedWarehouseQty;
-        $('.purchase_quantity -'+itr).val(remaningQty);
+        $('.purchase_quantity-'+itr).val(remaningQty);
 
        if(itr!='' && itr!=null) {
             $.ajax({

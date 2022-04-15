@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\QuantityFinder;
+use App\QuantityFinderMapping;
 use Datatables;
 
 use DB;
@@ -85,7 +86,7 @@ class WarehouseQuantityController extends Controller
             $id = $request->id;
             $warehouseQty = $request->warehouseQty;
             $remaningQty = $request->remaningQty;
-            $sellLine = QuantityFinder::find($id);
+            $sellLine = QuantityFinderMapping::find($id);
             if ($sellLine->demand_quantity < $warehouseQty) {
                 return json_encode(false);
             }

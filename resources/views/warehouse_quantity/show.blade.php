@@ -2,7 +2,7 @@
 	<div class="modal-content">
 		<div class="modal-header">
 		    <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		    <h4 class="modal-title" id="modalTitle"> @lang('lang_v1.stock_transfer_details') (<b>@lang('purchase.ref_no'):</b> )
+		    <h4 class="modal-title" id="modalTitle"> @lang('lang_v1.stock_transfer_details') (<b>@lang('purchase.ref_no'): {{$stock_transfers->refrence_number}}</b> )
 		    </h4>
 		</div>
         {!! Form::open(['url' => action('StockTransferController@quantityFinderSave'), 'name'=>'quantity_finder', 'method' => 'post', 'id' => 'stock_transfer_form' ]) !!}
