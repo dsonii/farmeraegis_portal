@@ -22,4 +22,12 @@ class QuantityFinderMapping extends Model
     {
         return $this->hasMany(\App\QuantityFinder::class, 'refrence_id');
     }
+
+    /**
+     * Get the unit associated with the purchase line.
+     */
+    public function product()
+    {
+        return $this->belongsTo(\App\Product::class, 'product_id');
+    }
 }

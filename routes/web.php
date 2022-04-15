@@ -268,6 +268,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     //Customer Groups
     Route::resource('customer-group', 'CustomerGroupController');
     Route::resource('warehouse-quantity', 'WarehouseQuantityController');
+    Route::resource('warehouse-quantity-save', 'WarehouseQuantityController@warehouseQty');
 
     //Import opening stock
     Route::get('/import-opening-stock', 'ImportOpeningStockController@index');
