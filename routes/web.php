@@ -259,6 +259,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('in-transit-stock-transfers', 'StockTransferController@inTransitIndex');
     Route::get('completed-stock-transfers', 'StockTransferController@completedIndex');
     Route::get('received-qty', 'StockTransferController@receivedQty');
+    Route::get('quantity-finder', 'StockTransferController@quantityFinder');
+    Route::post('quantity-finder', 'StockTransferController@quantityFinderSave');
     
     Route::get('/opening-stock/add/{product_id}', 'OpeningStockController@add');
     Route::post('/opening-stock/save', 'OpeningStockController@save');

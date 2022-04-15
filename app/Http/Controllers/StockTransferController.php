@@ -12,6 +12,8 @@ use App\Utils\ModuleUtil;
 
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
+use App\QuantityFinder;
+use App\QuantityFinderMapping;
 use Datatables;
 
 use DB;
@@ -439,7 +441,6 @@ class StockTransferController extends Controller
         return view('stock_transfer.index')->with(compact('statuses','page'));
     }
 
-
     /**
      * Show the form for creating a new resource.
      *
@@ -649,6 +650,88 @@ class StockTransferController extends Controller
         }
 
         return redirect('stock-transfers')->with('status', $output);
+    }
+
+
+    public function quantityFinder(Request $request)
+    {
+        if (!auth()->user()->can('product.quantity_finder_list')) {
+            abort(403, 'Unauthorized action.');
+        }
+        if (request()->ajax()) {
+            $business_id = request()->session()->get('user.business_id');
+            $ids = $request->keys;
+            $sell_transfers = Transaction::where('business_id', $business_id)
+                                ->whereIn('id', $ids)
+                                ->where('type', 'sell_transfer')
+                                ->with(
+                                    'contact',
+                                    'sell_lines',
+                                    'sell_lines.product',
+                                    'sell_lines.variations',
+                                    'sell_lines.variations.product_variation',
+                                    'sell_lines.lot_details',
+                                    'location',
+                                    'sell_lines.product.unit'
+                                )
+                                ->get();
+           
+            if ($sell_transfers->isNotEmpty()) {
+                foreach($sell_transfers as $key => $sell_transfer) {
+                    if(!empty($sell_transfer->sell_lines)) {
+                        foreach($sell_transfer->sell_lines as $sellKey => $sellLines) {
+                            $array[$sellLines->product_id]['product_id'] = $sellLines->product_id;
+                            $array[$sellLines->product_id]['name'] = $sellLines->product->name;
+                             if(isset($array[$sellLines->product_id]['demand_qty'])) {
+                                $array[$sellLines->product_id]['demand_qty'] += $sellLines->demand_qty;
+                             }else {
+                                $array[$sellLines->product_id]['demand_qty'] = $sellLines->demand_qty;
+                             }
+                             if(isset($array[$sellLines->product_id]['remaining_qty'])) {
+                                $array[$sellLines->product_id]['remaining_qty'] += $sellLines->remaining_qty;
+                             }else {
+                                $array[$sellLines->product_id]['remaining_qty'] = $sellLines->remaining_qty;
+                             }
+                        }
+                    }
+                }
+            }
+
+            return view('stock_transfer.show_quantity_finder')
+                    ->with(compact('array'));
+        }
+    }
+
+
+    public function quantityFinderSave(Request $request)
+    {
+        if (!auth()->user()->can('product.quantity_finder_list')) {
+            abort(403, 'Unauthorized action.');
+        }
+        $products = $request->product;
+        $refrenceNumber = explode(' ', microtime())[1]??rand(10000, 999999);
+        $quantityFinder = new QuantityFinder();
+        $mappingSave = [];
+        if(!empty($products)) {
+            foreach($products as $key=>$value){
+           
+                $productId = (int) array_key_first($value);
+                $demandValue = (int) $value[$productId];
+               
+                $mappingSave[] = new QuantityFinderMapping([
+                                'product_id' => $productId,
+                                'demand_quantity' => $demandValue
+                            ]);
+            }
+        }
+        
+        $quantityFinder->refrence_number = $refrenceNumber;
+        $quantityFinder->save();
+        $quantityFinder->quantiy()->saveMany($mappingSave);
+        $output = ['success' => 1,
+            'msg' => 'Shared Successfully!'
+        ];
+        return redirect('demand-stock-transfers')->with('status', $output);
     }
 
     /**

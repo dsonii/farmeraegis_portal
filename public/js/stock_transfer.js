@@ -1,11 +1,27 @@
 $(document).ready(function() {
     $(document).on('click', '.btn-quantity', function(){
-        var allVal = $('.input-icheck-box').val();
-        console.log(allVal);
+        var array = []
+        $(".input-icheck-box:checked").each(function(){
+            array.push($(this).val());
+        });
+       if(array!='' && array!=null) {
+            $.ajax({
+                method: 'GET',
+                url: '/quantity-finder',
+                data: {keys : array},
+                success: function(result) {
+                    if (result) {
+                        $('.view_modal')
+                        .html(result)
+                        .modal('show');
+                    } 
+                },
+            });
+       }
     });
-    //Add products
+    Add products
     if(typeof page == 'undefined') {
-       // var page = 'stock-transfers';
+        var page = 'stock-transfers';
     }
     if ($('#search_product_for_srock_adjustment').length > 0) {
         //Add Product
@@ -140,6 +156,51 @@ $(document).ready(function() {
         }
     });
 
+    if(page == 'demand-stock-transfers') {
+        var qtyLength = $('.btn-quantity').length;
+        if(qtyLength > 0 ){
+            var arr = [0, 9];
+            var objOfDT = [
+                { data: 'checkBox', name: 'checkBox' },
+                { data: 'transaction_date', name: 'transaction_date' },
+                { data: 'ref_no', name: 'ref_no' },
+                { data: 'location_from', name: 'l1.name' },
+                { data: 'location_to', name: 'l2.name' },
+                { data: 'status', name: 'status' },
+                { data: 'shipping_charges', name: 'shipping_charges' },
+                { data: 'final_total', name: 'final_total' },
+                { data: 'additional_notes', name: 'additional_notes' },
+                { data: 'action', name: 'action' },
+            ];
+        } else{
+            var arr = [0, 8];
+            var objOfDT = [
+                { data: 'transaction_date', name: 'transaction_date' },
+                { data: 'ref_no', name: 'ref_no' },
+                { data: 'location_from', name: 'l1.name' },
+                { data: 'location_to', name: 'l2.name' },
+                { data: 'status', name: 'status' },
+                { data: 'shipping_charges', name: 'shipping_charges' },
+                { data: 'final_total', name: 'final_total' },
+                { data: 'additional_notes', name: 'additional_notes' },
+                { data: 'action', name: 'action' },
+            ];
+        }
+        
+    } else {
+        var arr = [0, 8];
+        var objOfDT = [
+           { data: 'transaction_date', name: 'transaction_date' },
+           { data: 'ref_no', name: 'ref_no' },
+           { data: 'location_from', name: 'l1.name' },
+           { data: 'location_to', name: 'l2.name' },
+           { data: 'status', name: 'status' },
+           { data: 'shipping_charges', name: 'shipping_charges' },
+           { data: 'final_total', name: 'final_total' },
+           { data: 'additional_notes', name: 'additional_notes' },
+           { data: 'action', name: 'action' },
+       ];
+    }
     stock_transfer_table = $('#stock_transfer_table').DataTable({
         processing: true,
         serverSide: true,
@@ -147,23 +208,12 @@ $(document).ready(function() {
         ajax: '/'+page,
         columnDefs: [
             {
-                targets: [0, 9],
+                targets: arr,
                 orderable: false,
                 searchable: false,
             },
         ],
-        columns: [
-            { data: 'checkBox', name: 'checkBox' },
-            { data: 'transaction_date', name: 'transaction_date' },
-            { data: 'ref_no', name: 'ref_no' },
-            { data: 'location_from', name: 'l1.name' },
-            { data: 'location_to', name: 'l2.name' },
-            { data: 'status', name: 'status' },
-            { data: 'shipping_charges', name: 'shipping_charges' },
-            { data: 'final_total', name: 'final_total' },
-            { data: 'additional_notes', name: 'additional_notes' },
-            { data: 'action', name: 'action' },
-        ],
+        columns: objOfDT,
         fnDrawCallback: function(oSettings) {
             __currency_convert_recursively($('#stock_transfer_table'));
         },
